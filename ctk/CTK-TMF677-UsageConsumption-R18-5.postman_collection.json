@@ -1,0 +1,860 @@
+{
+	"info": {
+		"_postman_id": "9a13e9cd-79c1-4630-8982-8dccdb43baa9",
+		"name": "CTK-TMF677-UsageConsumption-R18-5",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "N1",
+			"item": [
+				{
+					"name": "Preparation",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "c870dd99-23c6-4cd1-bcce-2085eb3824c2",
+								"exec": [
+									"console.log(\"IDUC01 = \"+pm.globals.get(\"IDUC01\"));",
+									"if (pm.globals.get(\"IDUC01\") === undefined && pm.response.to.have.status(200)){",
+									"    var jsonData = pm.response.json();",
+									"",
+									"    if (Array.isArray(jsonData) && (jsonData.length > 1)) {",
+									"        pm.globals.set(\"IDUC01\", jsonData[0].id);",
+									"        pm.globals.set(\"IDUC02\", jsonData[1].id);",
+									"        pm.test(\"IDUC01 and IDUC02 set\", function () {",
+									"            return true;",
+									"        });",
+									"            ",
+									"",
+									"    ",
+									"    }",
+									"    else {",
+									"        pm.test(\"An array with at least 2 elements is expected to run this tests, if your API can't return an Array, follow the documentation distributed together with this CTK and set the globals IDUC01 and IDUC02 manually\", function () {",
+									"            pm.expect(0).to.eql(1)",
+									"        });",
+									"    }",
+									"}",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{UsageConsumptionAPI}}/usageConsumptionReport",
+							"host": [
+								"{{UsageConsumptionAPI}}"
+							],
+							"path": [
+								"usageConsumptionReport"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "N2",
+			"item": [
+				{
+					"name": "/usageConsumptionReport/ID01",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "ad6c36f4-1547-472c-b6c1-a32e85f31d7a",
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"",
+									"if (Array.isArray(jsonData)) {",
+									"",
+									"    pm.test('Array not expected as response', function () {",
+									"        pm.expect.fail()",
+									"    });",
+									"",
+									"",
+									"}",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var instance = pm.response.json();",
+									"var requiredAttributes = ['name', 'effectiveDate', 'bucket', ];",
+									"",
+									"pm.test('Instance has all mandatory attributes', function () {",
+									"    pm.expect(Object.keys(instance)).to.include.members(requiredAttributes)",
+									"});",
+									"",
+									"",
+									"",
+									"pm.test('Response name attribute is of type string', function () {",
+									"    pm.expect(instance.name).to.be.a('string');",
+									"});",
+									"pm.test('Response effectiveDate attribute is of type string', function () {",
+									"    pm.expect(instance.effectiveDate).to.be.a('string');",
+									"});",
+									"pm.test('Response bucket attribute is of type array', function () {",
+									"    pm.expect(instance.bucket).to.be.a('array');",
+									"});",
+									"pm.test('Response bucket[].id attribute is of type string', function () {",
+									"    pm.expect(instance.bucket[0].id).to.be.a('string');",
+									"});",
+									"",
+									"",
+									"pm.test('name is set', function () {",
+									"    pm.globals.set('NAMEUC01', instance.name);",
+									"    pm.expect(instance.name) == pm.globals.get(\"NAMEUC01\");",
+									"});",
+									"pm.test('effectiveDate is set', function () {",
+									"    pm.globals.set('EFFECTIVEDATEUC01', instance.effectiveDate);",
+									"    pm.expect(instance.effectiveDate) == pm.globals.get(\"EFFECTIVEDATEUC01\");",
+									"});",
+									"pm.test('bucket is set', function () {",
+									"    pm.globals.set('BUCKETUC01', instance.bucket);",
+									"    pm.expect(instance.bucket) == pm.globals.get(\"BUCKETUC01\");",
+									"});",
+									"pm.test('bucket_id is set', function () {",
+									"    pm.globals.set('BUCKET_IDUC01', instance.bucket[0].id);",
+									"    pm.expect(instance.bucket[0].id) == pm.globals.get(\"BUCKET_IDUC01\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Body includes value held on name\", function () {",
+									"    pm.expect(pm.response.text()).to.include(instance.name);",
+									"});",
+									"pm.test(\"Body includes value held on effectiveDate\", function () {",
+									"    pm.expect(pm.response.text()).to.include(instance.effectiveDate);",
+									"});",
+									"pm.test(\"Body includes value held on bucket[0].id\", function () {",
+									"    pm.expect(pm.response.text()).to.include(instance.bucket[0].id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{UsageConsumptionAPI}}/usageConsumptionReport/{{IDUC01}}",
+							"host": [
+								"{{UsageConsumptionAPI}}"
+							],
+							"path": [
+								"usageConsumptionReport",
+								"{{IDUC01}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/usageConsumptionReport/ID02",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "ad6c36f4-1547-472c-b6c1-a32e85f31d7a",
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"",
+									"if (Array.isArray(jsonData)) {",
+									"",
+									"  pm.test('Array not expected as response', function () {",
+									"    pm.expect.fail()",
+									"  });",
+									"",
+									"",
+									"}",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var instance = pm.response.json();",
+									"var requiredAttributes = ['name', 'effectiveDate', 'bucket', ];",
+									"",
+									"pm.test('Instance has all mandatory attributes', function () {",
+									"  pm.expect(Object.keys(instance)).to.include.members(requiredAttributes)",
+									"});",
+									"",
+									"",
+									"",
+									"pm.test('Response name attribute is of type string', function () {",
+									"  pm.expect(instance.name).to.be.a('string');",
+									"});",
+									"pm.test('Response effectiveDate attribute is of type string', function () {",
+									"  pm.expect(instance.effectiveDate).to.be.a('string');",
+									"});",
+									"pm.test('Response bucket attribute is of type array', function () {",
+									"  pm.expect(instance.bucket).to.be.a('array');",
+									"});",
+									"pm.test('Response bucket[].id attribute is of type string', function () {",
+									"  pm.expect(instance.bucket[0].id).to.be.a('string');",
+									"});",
+									"",
+									"",
+									"pm.test('name is set', function () {",
+									"  pm.globals.set('NAMEUC02', instance.name);",
+									"  pm.expect(instance.name) == pm.globals.get(\"NAMEUC02\");",
+									"});",
+									"pm.test('effectiveDate is set', function () {",
+									"  pm.globals.set('EFFECTIVEDATEUC02', instance.effectiveDate);",
+									"  pm.expect(instance.effectiveDate) == pm.globals.get(\"EFFECTIVEDATEUC02\");",
+									"});",
+									"pm.test('bucket is set', function () {",
+									"  pm.globals.set('BUCKETUC02', instance.bucket);",
+									"  pm.expect(instance.bucket) == pm.globals.get(\"BUCKETUC02\");",
+									"});",
+									"pm.test('bucket_id is set', function () {",
+									"  pm.globals.set('BUCKET_IDUC02', instance.bucket[0].id);",
+									"  pm.expect(instance.bucket[0].id) == pm.globals.get(\"BUCKET_IDUC02\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Body includes value held on name\", function () {",
+									"  pm.expect(pm.response.text()).to.include(instance.name);",
+									"});",
+									"pm.test(\"Body includes value held on effectiveDate\", function () {",
+									"  pm.expect(pm.response.text()).to.include(instance.effectiveDate);",
+									"});",
+									"pm.test(\"Body includes value held on bucket[0].id\", function () {",
+									"  pm.expect(pm.response.text()).to.include(instance.bucket[0].id);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{UsageConsumptionAPI}}/usageConsumptionReport/{{IDUC02}}",
+							"host": [
+								"{{UsageConsumptionAPI}}"
+							],
+							"path": [
+								"usageConsumptionReport",
+								"{{IDUC02}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "N3",
+			"item": [
+				{
+					"name": "/usageConsumptionReport?bucket.id={{BUCKET_IDUC01}}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "ad6c36f4-1547-472c-b6c1-a32e85f31d7a",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"",
+									"var jsonData = pm.response.json();",
+									"",
+									"if (Array.isArray(jsonData) && (jsonData.length > 0)) {",
+									"  jsonData.forEach(function (instance, index) {",
+									"",
+									"    var requiredAttributes = ['name', 'effectiveDate', 'bucket', ];",
+									"",
+									"    pm.test('Instance has all mandatory attributes', function () {",
+									"      pm.expect(Object.keys(instance)).to.include.members(requiredAttributes)",
+									"    });",
+									"",
+									"",
+									"",
+									"    pm.test('Response name attribute is of type string', function () {",
+									"      pm.expect(instance.name).to.be.a('string');",
+									"    });",
+									"    pm.test('Response effectiveDate attribute is of type string', function () {",
+									"      pm.expect(instance.effectiveDate).to.be.a('string');",
+									"    });",
+									"    pm.test('Response bucket attribute is of type array', function () {",
+									"      pm.expect(instance.bucket).to.be.a('array');",
+									"    });",
+									"    pm.test('Response bucket[].id attribute is of type string', function () {",
+									"      pm.expect(instance.bucket[0].id).to.be.a('string');",
+									"    });",
+									"",
+									"",
+									"    pm.test(\"Body includes value held on name\", function () {",
+									"      pm.expect(pm.response.text()).to.include(instance.name);",
+									"    });",
+									"    pm.test(\"Body includes value held on effectiveDate\", function () {",
+									"      pm.expect(pm.response.text()).to.include(instance.effectiveDate);",
+									"    });",
+									"    pm.test(\"Body includes value held on bucket[0].id\", function () {",
+									"      pm.expect(pm.response.text()).to.include(instance.bucket[0].id);",
+									"    });",
+									"",
+									"",
+									"",
+									"",
+									"    // Individualized tests",
+									"    if (instance.id == pm.globals.get(\"IDUC01\")) {",
+									"",
+									"      pm.test('name is ' + pm.globals.get(\"NAMEUC01\"), function () {",
+									"        pm.expect(instance.name) == pm.globals.get(\"NAMEUC01\");",
+									"      });",
+									"      pm.test('effectiveDate is ' + pm.globals.get(\"EFFECTIVEDATEUC01\"), function () {",
+									"        pm.expect(instance.effectiveDate) == pm.globals.get(\"EFFECTIVEDATEUC01\");",
+									"      });",
+									"      pm.test('bucket is ' + pm.globals.get(\"BUCKETUC01\"), function () {",
+									"        pm.expect(instance.bucket) == pm.globals.get(\"BUCKETUC01\");",
+									"      });",
+									"      pm.test('BUCKET_IDUC is ' + pm.globals.get(\"BUCKET_IDUC01\"), function () {",
+									"        pm.expect(instance.bucket[0].id) == pm.globals.get(\"BUCKET_IDUC01\");",
+									"      });",
+									"",
+									"    }",
+									"    if (instance.id == pm.globals.get(\"IDUC02\")) {",
+									"",
+									"      pm.test('IDUC02 not expected on this test', function () {",
+									"        pm.expect.fail()",
+									"      });",
+									"    }",
+									"",
+									"  });",
+									"} else {",
+									"  var requiredAttributes = ['name', 'effectiveDate', 'bucket', ];",
+									"  var instance = pm.response.json();",
+									"",
+									"  pm.test('Instance has all mandatory attributes', function () {",
+									"    pm.expect(Object.keys(instance)).to.include.members(requiredAttributes)",
+									"  });",
+									"",
+									"",
+									"",
+									"  pm.test('Response name attribute is of type string', function () {",
+									"    pm.expect(instance.name).to.be.a('string');",
+									"  });",
+									"  pm.test('Response effectiveDate attribute is of type string', function () {",
+									"    pm.expect(instance.effectiveDate).to.be.a('string');",
+									"  });",
+									"  pm.test('Response bucket attribute is of type array', function () {",
+									"    pm.expect(instance.bucket).to.be.a('array');",
+									"  });",
+									"  pm.test('Response bucket[].id attribute is of type string', function () {",
+									"    pm.expect(instance.bucket[0].id).to.be.a('string');",
+									"  });",
+									"",
+									"",
+									"  pm.test(\"Body includes value held on name\", function () {",
+									"    pm.expect(pm.response.text()).to.include(instance.name);",
+									"  });",
+									"  pm.test(\"Body includes value held on effectiveDate\", function () {",
+									"    pm.expect(pm.response.text()).to.include(instance.effectiveDate);",
+									"  });",
+									"  pm.test(\"Body includes value held on bucket[0].id\", function () {",
+									"    pm.expect(pm.response.text()).to.include(instance.bucket[0].id);",
+									"  });",
+									"",
+									"",
+									"",
+									"",
+									"  // Individualized tests",
+									"  if (instance.id == pm.globals.get(\"IDUC01\")) {",
+									"",
+									"    pm.test('name is ' + pm.globals.get(\"NAMEUC01\"), function () {",
+									"      pm.expect(instance.name) == pm.globals.get(\"NAMEUC01\");",
+									"    });",
+									"    pm.test('effectiveDate is ' + pm.globals.get(\"EFFECTIVEDATEUC01\"), function () {",
+									"      pm.expect(instance.effectiveDate) == pm.globals.get(\"EFFECTIVEDATEUC01\");",
+									"    });",
+									"    pm.test('bucket is ' + pm.globals.get(\"BUCKETUC01\"), function () {",
+									"      pm.expect(instance.bucket) == pm.globals.get(\"BUCKETUC01\");",
+									"    });",
+									"    pm.test('BUCKET_IDUC is ' + pm.globals.get(\"BUCKET_IDUC01\"), function () {",
+									"      pm.expect(instance.bucket[0].id) == pm.globals.get(\"BUCKET_IDUC01\");",
+									"    });",
+									"",
+									"  }",
+									"  if (instance.id == pm.globals.get(\"IDUC02\")) {",
+									"",
+									"    pm.test('IDUC02 not expected on this test', function () {",
+									"      pm.expect.fail()",
+									"    });",
+									"  }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{UsageConsumptionAPI}}/usageConsumptionReport?bucket.id={{BUCKET_IDUC01}}",
+							"host": [
+								"{{UsageConsumptionAPI}}"
+							],
+							"path": [
+								"usageConsumptionReport"
+							],
+							"query": [
+								{
+									"key": "bucket.id",
+									"value": "{{BUCKET_IDUC01}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/usageConsumptionReport?name={{NAMEUC02}}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "ad6c36f4-1547-472c-b6c1-a32e85f31d7a",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"",
+									"var jsonData = pm.response.json();",
+									"",
+									"if (Array.isArray(jsonData) && (jsonData.length > 0)) {",
+									"  jsonData.forEach(function (instance, index) {",
+									"",
+									"    var requiredAttributes = ['name', 'effectiveDate', 'bucket', ];",
+									"",
+									"    pm.test('Instance has all mandatory attributes', function () {",
+									"      pm.expect(Object.keys(instance)).to.include.members(requiredAttributes)",
+									"    });",
+									"",
+									"",
+									"",
+									"    pm.test('Response name attribute is of type string', function () {",
+									"      pm.expect(instance.name).to.be.a('string');",
+									"    });",
+									"    pm.test('Response effectiveDate attribute is of type string', function () {",
+									"      pm.expect(instance.effectiveDate).to.be.a('string');",
+									"    });",
+									"    pm.test('Response bucket attribute is of type array', function () {",
+									"      pm.expect(instance.bucket).to.be.a('array');",
+									"    });",
+									"    pm.test('Response bucket[].id attribute is of type string', function () {",
+									"      pm.expect(instance.bucket[0].id).to.be.a('string');",
+									"    });",
+									"",
+									"",
+									"    pm.test(\"Body includes value held on name\", function () {",
+									"      pm.expect(pm.response.text()).to.include(instance.name);",
+									"    });",
+									"    pm.test(\"Body includes value held on effectiveDate\", function () {",
+									"      pm.expect(pm.response.text()).to.include(instance.effectiveDate);",
+									"    });",
+									"    pm.test(\"Body includes value held on bucket[0].id\", function () {",
+									"      pm.expect(pm.response.text()).to.include(instance.bucket[0].id);",
+									"    });",
+									"",
+									"",
+									"",
+									"",
+									"    // Individualized tests",
+									"    if (instance.id == pm.globals.get(\"IDUC02\")) {",
+									"",
+									"      pm.test('name is ' + pm.globals.get(\"NAMEUC02\"), function () {",
+									"        pm.expect(instance.name) == pm.globals.get(\"NAMEUC02\");",
+									"      });",
+									"      pm.test('effectiveDate is ' + pm.globals.get(\"EFFECTIVEDATEUC02\"), function () {",
+									"        pm.expect(instance.effectiveDate) == pm.globals.get(\"EFFECTIVEDATEUC02\");",
+									"      });",
+									"      pm.test('bucket is ' + pm.globals.get(\"BUCKETUC02\"), function () {",
+									"        pm.expect(instance.bucket) == pm.globals.get(\"BUCKETUC02\");",
+									"      });",
+									"      pm.test('BUCKET_IDUC is ' + pm.globals.get(\"BUCKET_IDUC02\"), function () {",
+									"        pm.expect(instance.bucket[0].id) == pm.globals.get(\"BUCKET_IDUC02\");",
+									"      });",
+									"",
+									"    }",
+									"    if (instance.id == pm.globals.get(\"IDUC01\")) {",
+									"",
+									"      pm.test('IDUC01 not expected on this test', function () {",
+									"        pm.expect.fail()",
+									"      });",
+									"    }",
+									"",
+									"  });",
+									"} else {",
+									"  var requiredAttributes = ['name', 'effectiveDate', 'bucket', ];",
+									"  var instance = pm.response.json();",
+									"",
+									"  pm.test('Instance has all mandatory attributes', function () {",
+									"    pm.expect(Object.keys(instance)).to.include.members(requiredAttributes)",
+									"  });",
+									"",
+									"",
+									"",
+									"  pm.test('Response name attribute is of type string', function () {",
+									"    pm.expect(instance.name).to.be.a('string');",
+									"  });",
+									"  pm.test('Response effectiveDate attribute is of type string', function () {",
+									"    pm.expect(instance.effectiveDate).to.be.a('string');",
+									"  });",
+									"  pm.test('Response bucket attribute is of type array', function () {",
+									"    pm.expect(instance.bucket).to.be.a('array');",
+									"  });",
+									"  pm.test('Response bucket[].id attribute is of type string', function () {",
+									"    pm.expect(instance.bucket[0].id).to.be.a('string');",
+									"  });",
+									"",
+									"",
+									"  pm.test(\"Body includes value held on name\", function () {",
+									"    pm.expect(pm.response.text()).to.include(instance.name);",
+									"  });",
+									"  pm.test(\"Body includes value held on effectiveDate\", function () {",
+									"    pm.expect(pm.response.text()).to.include(instance.effectiveDate);",
+									"  });",
+									"  pm.test(\"Body includes value held on bucket[0].id\", function () {",
+									"    pm.expect(pm.response.text()).to.include(instance.bucket[0].id);",
+									"  });",
+									"",
+									"",
+									"",
+									"",
+									"  // Individualized tests",
+									"  if (instance.id == pm.globals.get(\"IDUC02\")) {",
+									"",
+									"    pm.test('name is ' + pm.globals.get(\"NAMEUC02\"), function () {",
+									"      pm.expect(instance.name) == pm.globals.get(\"NAMEUC02\");",
+									"    });",
+									"    pm.test('effectiveDate is ' + pm.globals.get(\"EFFECTIVEDATEUC02\"), function () {",
+									"      pm.expect(instance.effectiveDate) == pm.globals.get(\"EFFECTIVEDATEUC02\");",
+									"    });",
+									"    pm.test('bucket is ' + pm.globals.get(\"BUCKETUC02\"), function () {",
+									"      pm.expect(instance.bucket) == pm.globals.get(\"BUCKETUC02\");",
+									"    });",
+									"    pm.test('BUCKET_IDUC is ' + pm.globals.get(\"BUCKET_IDUC02\"), function () {",
+									"      pm.expect(instance.bucket[0].id) == pm.globals.get(\"BUCKET_IDUC02\");",
+									"    });",
+									"",
+									"  }",
+									"  if (instance.id == pm.globals.get(\"IDUC01\")) {",
+									"",
+									"    pm.test('IDUC01 not expected on this test', function () {",
+									"      pm.expect.fail()",
+									"    });",
+									"  }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{UsageConsumptionAPI}}/usageConsumptionReport?name={{NAMEUC02}}",
+							"host": [
+								"{{UsageConsumptionAPI}}"
+							],
+							"path": [
+								"usageConsumptionReport"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "{{NAMEUC02}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "N4",
+			"item": [
+				{
+					"name": "/usageConsumptionReport/ID01fields=id,bucket",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "ad6c36f4-1547-472c-b6c1-a32e85f31d7a",
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"",
+									"if (Array.isArray(jsonData)) {",
+									"",
+									"    pm.test('Array not expected as response', function () {",
+									"        pm.expect.fail()",
+									"    });",
+									"",
+									"",
+									"}",
+									"",
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"var instance = pm.response.json();",
+									"var requiredAttributes = ['id', 'bucket', ];",
+									"",
+									"pm.test('Instance has all mandatory attributes', function () {",
+									"    pm.expect(Object.keys(instance)).to.include.members(requiredAttributes)",
+									"});",
+									"",
+									"",
+									"",
+									"pm.test('Response bucket attribute is of type array', function () {",
+									"    pm.expect(instance.bucket).to.be.a('array');",
+									"});",
+									"pm.test('Response bucket[].id attribute is of type string', function () {",
+									"    pm.expect(instance.bucket[0].id).to.be.a('string');",
+									"});",
+									"",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{UsageConsumptionAPI}}/usageConsumptionReport/{{IDUC01}}?fields=id,bucket",
+							"host": [
+								"{{UsageConsumptionAPI}}"
+							],
+							"path": [
+								"usageConsumptionReport",
+								"{{IDUC01}}"
+							],
+							"query": [
+								{
+									"key": "fields",
+									"value": "id,bucket"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "E1",
+			"item": [
+				{
+					"name": "/usageConsumptionReport/ID01 Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "ad6c36f4-1547-472c-b6c1-a32e85f31d7a",
+								"exec": [
+									"",
+									"",
+									"pm.test(\"Status code is 404\", function () {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{UsageConsumptionAPI}}/usageConsumptionReport/000",
+							"host": [
+								"{{UsageConsumptionAPI}}"
+							],
+							"path": [
+								"usageConsumptionReport",
+								"000"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "E2",
+			"item": [
+				{
+					"name": "/usageConsumptionReport?bucket.id={{BUCKET_IDUC01}} Copy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "ad6c36f4-1547-472c-b6c1-a32e85f31d7a",
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Body is correct (empty array\", function () {",
+									"    pm.response.to.have.body(\"[]\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{UsageConsumptionAPI}}/usageConsumptionReport?bucket.id=404Bucket000",
+							"host": [
+								"{{UsageConsumptionAPI}}"
+							],
+							"path": [
+								"usageConsumptionReport"
+							],
+							"query": [
+								{
+									"key": "bucket.id",
+									"value": "404Bucket000"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
